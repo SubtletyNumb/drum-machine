@@ -1,23 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import './style-sheets/App.css';
+import DrumMachine from './Components/DrumMachine';
+import { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { playDrumPadBtnAnim, playSound } from './Features/drumMachineSlice/drumMachineSlice';
 
 function App() {
+  const { keyboardPadButtons } = useSelector(store => store.drumMachine)
+  const dispatch = useDispatch();
+  const handleKeyPress = (event) => {
+    let audio = document.getElementById(event.key.toUpperCase());
+    if(!audio) return;
+    dispatch(playDrumPadBtnAnim({key: event.key.toUpperCase()}))
+    audio.play().then(()=>{
+      audio.pause()
+      audio.currentTime = 0;
+      audio.play();
+    })
+  }
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyPress)
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress)
+    }
+  }, [])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <main className='main-container'>
+      <DrumMachine drumPadButtons={keyboardPadButtons}/>
+     </main>
     </div>
   );
 }
