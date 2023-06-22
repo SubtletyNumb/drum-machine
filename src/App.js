@@ -8,14 +8,7 @@ function App() {
   const { keyboardPadButtons } = useSelector(store => store.drumMachine)
   const dispatch = useDispatch();
   const handleKeyPress = (event) => {
-    let audio = document.getElementById(event.key.toUpperCase());
-    if(!audio) return;
     dispatch(playDrumPadBtnAnim({key: event.key.toUpperCase()}))
-    audio.play().then(()=>{
-      audio.pause()
-      audio.currentTime = 0;
-      audio.play();
-    })
   }
   useEffect(() => {
     document.addEventListener('keydown', handleKeyPress)

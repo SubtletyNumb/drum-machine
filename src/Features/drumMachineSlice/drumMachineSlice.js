@@ -22,7 +22,14 @@ const drumMachineSlice = createSlice({
   reducers: {
     playDrumPadBtnAnim: (state, {payload}) => {
       if(state.keyboardPadButtons.some(btn => btn.keyboardShortCut === payload.key)){
-        
+        let audio = document.getElementById(payload.key.toUpperCase());
+        audio.volume = state.soundVolume;
+        if(!audio) return;
+        audio.play().then(()=>{
+          audio.pause()
+          audio.currentTime = 0;
+          audio.play();
+        })
         state.displayText = state.keyboardPadButtons.filter(btn => btn.keyboardShortCut === payload.key)[0].sound.replace(/-/g, " ");
       }
       state.keyboardPadButtons = state.keyboardPadButtons.map(btn => {
